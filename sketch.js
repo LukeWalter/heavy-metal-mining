@@ -139,8 +139,8 @@ function preload() {
   bgImg = loadImage("images/background.png");
   indB = loadImage("images/indestructible_brick.png");
   shot = loadImage("images/shot.png");
-  wall_l = loadImage("images/wall.png");
-  wall_r = loadImage("images/wall.png");
+  wall_l = loadImage("images/side_wall.JPG");
+  wall_r = loadImage("images/side_wall.JPG");
 
 } // preload
 
@@ -159,11 +159,11 @@ function setup() {
 
   wallLeft = createSprite(canvasWidth /  14, canvasHeight/2, WALL_THICKNESS, canvasHeight);
   wallLeft.immovable = true;
-  //wallLeft.addImage(wall_l);
+  wallLeft.addImage(wall_l);
 
   wallRight = createSprite(13 * canvasWidth / 14, canvasHeight/2, WALL_THICKNESS, canvasHeight);
   wallRight.immovable = true;
-  //wallRight.addImage(wall_r);
+  wallRight.addImage(wall_r);
 
   bricks = new Group();
 
