@@ -136,7 +136,7 @@ var projectiles = [];
 function preload() {
   v1 = loadImage("images/vehicle1.png");
   v2 = loadImage("images/vehicle2.png");
-  bgImg = loadImage("images/placeholder.png");
+  bgImg = loadImage("images/background.png");
   indB = loadImage("images/indestructible_brick.png");
   shot = loadImage("images/shot.png");
   wall_l = loadImage("images/wall.png");
@@ -147,7 +147,7 @@ function preload() {
 function setup() {
   createCanvas(canvasWidth, canvasHeight);
 
-  player = createSprite(canvasWidth/2, 100, 100, 10);
+  player = createSprite(canvasWidth/2, 70, 100, 10);
   player.addAnimation("idle", v1, v2);
   player.immovable = true;
 
