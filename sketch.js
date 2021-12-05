@@ -125,7 +125,7 @@ var canvasHeight = 640;//window.innerHeight - 0.1;
 var player, wallTop, wallBottom, wallLeft, wallRight;
 var bricks;
 var MAX_SPEED = 9;
-var WALL_THICKNESS = canvasWidth / 3;
+var WALL_THICKNESS = canvasWidth / 7;
 var BRICK_W = 80;
 var BRICK_H = 40;
 var BRICK_MARGIN = 4;
@@ -139,6 +139,8 @@ function preload() {
   bgImg = loadImage("images/placeholder.png");
   indB = loadImage("images/indestructible_brick.png");
   shot = loadImage("images/shot.png");
+  wall_l = loadImage("images/wall.png");
+  wall_r = loadImage("images/wall.png");
 
 } // preload
 
@@ -155,11 +157,13 @@ function setup() {
   wallBottom = createSprite(canvasWidth/2, canvasHeight+WALL_THICKNESS/2, canvasWidth+WALL_THICKNESS*2, WALL_THICKNESS);
   wallBottom.immovable = true;
 
-  wallLeft = createSprite(-WALL_THICKNESS/2, canvasHeight/2, WALL_THICKNESS, canvasHeight);
+  wallLeft = createSprite(canvasWidth /  14, canvasHeight/2, WALL_THICKNESS, canvasHeight);
   wallLeft.immovable = true;
+  //wallLeft.addImage(wall_l);
 
-  wallRight = createSprite(canvasWidth+WALL_THICKNESS/2, canvasHeight/2, WALL_THICKNESS, canvasHeight);
+  wallRight = createSprite(13 * canvasWidth / 14, canvasHeight/2, WALL_THICKNESS, canvasHeight);
   wallRight.immovable = true;
+  //wallRight.addImage(wall_r);
 
   bricks = new Group();
 
@@ -201,19 +205,16 @@ function draw() {
 function makeBrickRow() {
   
   var rowY = canvasHeight * 0.95;
-  var rowLength = 5;
+  var rowLength = 7;
   brickWidth = 80;
   brickHeight = 40;
 
   bricks = new Group();
 
-  var offsetX = width/2-(COLUMNS-1)*(BRICK_MARGIN+BRICK_W)/2;
-  var offsetY = 80;
-
   for(var r = 0; r < rowLength; r++) {
   
-    var offset = (r - Math.trunc((rowLength / 2))) * brickWidth;
-    var brick = createSprite(canvasWidth / 2 + offset, rowY, brickWidth, brickHeight);
+    var offset = (r - Math.trunc((rowLength / 2))) * BRICK_W;
+    var brick = createSprite(canvasWidth / 2 + offset, rowY, BRICK_W, BRICK_H);
     brick.addImage("brick", indB);
     bricks.add(brick);
     brick.immovable = true;
