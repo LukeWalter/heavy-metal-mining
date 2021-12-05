@@ -24,7 +24,7 @@ var canvasHeight = 640;//window.innerHeight - 0.1;
 //     var offset = (x - Math.trunc((rowLength / 2))) * brickWidth;
 //     var i = bricks.length - 1;
 //     bricks[bricks.length - 1] = createSprite(canvasWidth / 2 + offset, rowY, brickWidth, brickHeight);
-//     bricks[bricks.length - 1].addImage("brick", indB);
+//     bricks[bricks.length - 1].addImage("brick", ind);
 //     bricks.length++;
 
 //   } // for
@@ -99,7 +99,7 @@ var canvasHeight = 640;//window.innerHeight - 0.1;
 //   v1 = loadImage("images/vehicle1.png");
 //   v2 = loadImage("images/vehicle2.png");
 //   bgImg = loadImage("images/placeholder.png");
-//   indB = loadImage("images/indestructible_brick.png");
+//   ind = loadImage("images/indestructible_brick.png");
 //   shot = loadImage("images/shot.png");
 
 // } // preload
@@ -129,27 +129,40 @@ var WALL_THICKNESS = canvasWidth / 7;
 var BRICK_W = 80;
 var BRICK_H = 40;
 var BRICK_MARGIN = 4;
-var BRICK_SPEED = 0;
+var BRICK_SPEED = 0.0;
 var ROWS = 9;
 var COLUMNS = 16;
 var projectiles = [];
+var normal_bricks;
 
 function preload() {
   v1 = loadImage("images/vehicle1.png");
   v2 = loadImage("images/vehicle2.png");
   bgImg = loadImage("images/background.png");
-  indB = loadImage("images/indestructible_brick.png");
   shot = loadImage("images/shot.png");
   wall_l = loadImage("images/side_wall.JPG");
   wall_r = loadImage("images/side_wall.JPG");
 
+  red = loadImage("images/red_brick.png");
+  blue = loadImage("images/blue_brick.png");
+  green = loadImage("images/green_brick.png");
+  yellow = loadImage("images/yellow_brick.png");
+
+  normal_bricks = [red, blue, green, yellow];
+
+  purple = loadImage("images/tough_brick1.png");
+  tough = loadImage("images/tough_brick2.png");
+  ind = loadImage("images/indestructible_brick.png");
+
 } // preload
 
 function setup() {
+
   createCanvas(canvasWidth, canvasHeight);
 
   player = createSprite(canvasWidth/2, 70, 100, 10);
-  player.addAnimation("idle", v1, v2);
+  player.addAnimation("moving", v1, v2);
+  player.addAnimation("idle", v1);
   player.immovable = true;
 
   wallTop = createSprite(canvasWidth/2, -WALL_THICKNESS/2, canvasWidth+WALL_THICKNESS*2, WALL_THICKNESS);
@@ -232,9 +245,45 @@ function makeBrickRow(factor) {
   
     var offset = (r - Math.trunc((rowLength / 2))) * (BRICK_W + 2 * BRICK_MARGIN);
     var brick = createSprite(canvasWidth / 2 + offset, rowY, BRICK_W, BRICK_H);
-    brick.addImage("brick", indB);
-    bricks.add(brick);
     brick.immovable = true;
+
+    var type = Math.trunc(Math.random() * 4);
+
+    switch (type) {
+      
+      case 0:
+        brick.remove();
+        break;
+      
+      case 1:
+
+        var variant = Math.trunc(Math.random() * 4);
+        brick.addAnimation("1", normal_bricks[variant ]);
+        brick.changeAnimation("1");
+        break;
+      
+      case 2:
+        brick.addAnimation("2", tough);
+        brick.addAnimation("1", purple);
+        brick.changeAnimation("2");
+        break;
+      
+      case 3: 
+        brick.addAnimation("5", ind);
+        brick.addAnimation("4", ind);
+        brick.addAnimation("3", ind);
+        brick.addAnimation("2", ind);
+        brick.addAnimation("1", red);
+        brick.changeAnimation("5");
+        break;
+      
+      default:
+        brick.remove();
+        break;
+
+    } // switch
+
+    bricks.add(brick);
   
   } // for
 
@@ -244,14 +293,18 @@ function makeBrickRow(factor) {
 
 var shoot_btn_held = false;
 function getInput() {
+
+  player.changeImage("idle");
   
   if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
     playerRight();
+    player.changeImage("moving");
     
   } // if
   
   if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
     playerLeft();
+    player.changeImage("moving");
   
   } // if
 
@@ -288,7 +341,7 @@ function playerLeft() {
 
 var shooting = false;
 var projSpeed = 18;
-var ammo = 20;
+var ammo = 3;
 function playerShoot() {
   
   if (ammo > 0) {
@@ -306,6 +359,16 @@ function playerShoot() {
 } // playerShoot
 
 function brickHit(ball, brick) {
-  brick.remove();
+  
+  var health = brick.getAnimationLabel();
+
+  if (health - 1 > 0) {
+    brick.changeAnimation(health - 1);
+
+  } else {
+    brick.remove();
+
+  } // if
+  
 }
 
