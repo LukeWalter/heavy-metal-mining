@@ -1,12 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Overpass+Mono&family=Press+Start+2P&display=swap');
 
 html, body {
+  background-color: #121212;
   margin: 0;
   padding: 0;
 }
+
+h1 {
+  color: white;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 55px;
+  text-align: center;
+}
+
 canvas {
   display: block;
   margin: auto;
   width: 50%;
-  padding: 100px;
+  padding: 0vw 2vw 2vw 2vw;
 }
