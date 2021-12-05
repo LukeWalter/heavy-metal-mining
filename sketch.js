@@ -204,6 +204,12 @@ function draw() {
     p.bounce(wallLeft);
     p.bounce(wallRight);
 
+    for (let j = 0; j < projectiles.length; j++) {
+      var p2 = projectiles[j];
+      p.bounce(p2);
+    
+    } // for
+
     if(p.bounce(player)) {
       var swing = (p.position.x-player.position.x)/3;
       p.setSpeed(MAX_SPEED, p.getDirection()+swing);
@@ -370,5 +376,5 @@ function brickHit(ball, brick) {
 
   } // if
   
-}
+} // brickHit
 
