@@ -129,6 +129,7 @@ var WALL_THICKNESS = canvasWidth / 7;
 var BRICK_W = 80;
 var BRICK_H = 40;
 var BRICK_MARGIN = 4;
+var BRICK_SPEED = 0;
 var ROWS = 9;
 var COLUMNS = 16;
 var projectiles = [];
@@ -170,7 +171,9 @@ function setup() {
   var offsetX = 0;
   var offsetY = 0;
 
-  makeBrickRow ();
+  bricks = new Group();
+  makeBrickRow(0.95);
+  makeBrickRow(1.02);
 
 } // setup
 
@@ -188,32 +191,46 @@ function draw() {
     p.bounce(wallLeft);
     p.bounce(wallRight);
 
-    if(p.bounce(player))
-  {
-    var swing = (p.position.x-player.position.x)/3;
-    p.setSpeed(MAX_SPEED, p.getDirection()+swing);
-  }
+    if(p.bounce(player)) {
+      var swing = (p.position.x-player.position.x)/3;
+      p.setSpeed(MAX_SPEED, p.getDirection()+swing);
+    
+    } // if
 
-  p.bounce(bricks, brickHit);
+    p.bounce(bricks, brickHit);
   
   } // for
 
   drawSprites();
 
+  for (let i = 0; i < bricks.length; i++) {
+    var b = bricks[i];
+    b.position.y -= BRICK_SPEED;
+
+  } // for
+
+  if (bricks.length > 0) {
+    
+    if (bricks[bricks.length - 1].position.y <= canvasHeight * 0.95) {
+      makeBrickRow(1.02);
+
+    } else if (bricks[0].position.y <= canvasHeight * 0.1) {
+      BRICK_SPEED = 0;
+
+    } // if
+
+  } // if
+
 } // draw
 
-function makeBrickRow() {
+function makeBrickRow(factor) {
   
-  var rowY = canvasHeight * 0.95;
+  var rowY = canvasHeight * factor;
   var rowLength = 7;
-  brickWidth = 80;
-  brickHeight = 40;
-
-  bricks = new Group();
 
   for(var r = 0; r < rowLength; r++) {
   
-    var offset = (r - Math.trunc((rowLength / 2))) * BRICK_W;
+    var offset = (r - Math.trunc((rowLength / 2))) * (BRICK_W + 2 * BRICK_MARGIN);
     var brick = createSprite(canvasWidth / 2 + offset, rowY, BRICK_W, BRICK_H);
     brick.addImage("brick", indB);
     bricks.add(brick);
