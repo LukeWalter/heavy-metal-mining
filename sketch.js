@@ -1,127 +1,6 @@
 var canvasWidth = 960;//window.innerWidth;
 var canvasHeight = 640;//window.innerHeight - 0.1;
 
-// var player = 0;
-// var playerX = canvasWidth / 2;
-// var playerY = canvasHeight / 5;
-// var sprWidth = canvasWidth / 3;
-// var sprHeight = sprWidth / 4;
-
-// var playerMaxX = window.innerWidth;
-
-// var brickRows = [];
-
-// function makeBrickRow() {
-  
-//   var rowY = canvasHeight * 0.95;
-//   var rowLength = 5;
-//   brickWidth = 160;
-//   brickHeight = 80;
-
-//   var bricks = [];
-
-//   for (let x = 0; x < rowLength; x++) {
-//     var offset = (x - Math.trunc((rowLength / 2))) * brickWidth;
-//     var i = bricks.length - 1;
-//     bricks[bricks.length - 1] = createSprite(canvasWidth / 2 + offset, rowY, brickWidth, brickHeight);
-//     bricks[bricks.length - 1].addImage("brick", ind);
-//     bricks.length++;
-
-//   } // for
-
-//   return bricks;
-
-// } // makeBrickRow
-
-// var shoot_btn_held = false;
-// function getInput() {
-  
-//   if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
-//     playerRight();
-    
-//   } // if
-  
-//   if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
-//     playerLeft();
-  
-//   } // if
-
-//   if (keyIsDown(32)) {
-//     if (!shoot_btn_held) playerShoot();
-//     shoot_btn_held = true;
-  
-//   } else {
-//     shoot_btn_held = false;
-
-//   } // if
-
-// } // getInput
-
-// var speed = 10;
-
-// function playerRight() {
-  
-//   if (player.position.x < (5 * canvasWidth / 7)) {
-//     player.position.x += speed;
-  
-//   } // if
-
-// } // playerRight
-
-// function playerLeft() {
-  
-//   if (player.position.x > (2 * canvasWidth / 7)) {
-//     player.position.x -= speed;
-  
-//   } // if
-
-// } // playerLeft
-
-// var shooting = false;
-// var projSpeed = 18;
-// var ammo = 20;
-// function playerShoot() {
-  
-//   if (ammo > 0) {
-
-//     var projectile = createSprite(player.position.x, player.position.y);
-//     projectile.addImage(shot);
-//     projectile.setSpeed(projSpeed, 90);
-//     projectile.setCollider("rectangle", 0, 0, 40, 40);
-
-//     ammo--;
-
-//   } // ifa 
-
-// } // playerShoot
-
-// function preload() {
-//   v1 = loadImage("images/vehicle1.png");
-//   v2 = loadImage("images/vehicle2.png");
-//   bgImg = loadImage("images/placeholder.png");
-//   ind = loadImage("images/indestructible_brick.png");
-//   shot = loadImage("images/shot.png");
-
-// } // preload
-
-// function setup() {
-//   createCanvas(canvasWidth, canvasHeight);
-//   brickRows[brickRows.length++ - 1] = makeBrickRow();
-//   player = createSprite(playerX, playerY, sprWidth, sprHeight);
-//   player.addAnimation("idle", v1, v2);
-
-// } // setup
-
-// function draw() {
-//   background(bgImg);
-//   getInput();
-//   drawSprites();
-
-// } // draw
-
-//breakout close (core mechanics)
-//mouse to control the player, click to start
-
 var player, wallTop, wallBottom, wallLeft, wallRight, life1, life2, life3;
 var bricks;
 var MAX_SPEED = 9;
@@ -134,12 +13,24 @@ var ROWS = 9;
 var COLUMNS = 16;
 var health = 3;
 var score = 0;
+var difficulty_factor = 10;
 
 var projectiles = [];
 var normal_bricks;
 
+function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+
+} // sleep
+
 function preload() {
   
+  song = loadSound("doom_metal_song.mp3");
+
   v1 = loadImage("images/vehicle1.png");
   v2 = loadImage("images/vehicle2.png");
   bgImg = loadImage("images/background.png");
@@ -216,7 +107,7 @@ function setup() {
 } // setup
 
 function draw() {
-  
+
   if (bricks.length == 0) {
     
     for (let i = 0; i < projectiles.length; i++) {
@@ -228,6 +119,9 @@ function draw() {
     projectiles = [];
     ammo = 3;
 
+    sleep(500);
+    difficulty_factor++;
+    score += 1000;
     startLevel();
 
   } // if
@@ -246,13 +140,17 @@ function draw() {
       
       switch (health) {
         case 3:
-          life3.remove();health--;
+          life3.remove();
+          health--;
           break;
         case 2:
-          life2.remove();health--;
+          life2.remove();
+          health--;
           break;
         case 1:
-          life1.remove();health--;
+          life1.remove();
+          song.stop();
+          sleep(500);
           noLoop();
           alert("Game Over!\nScore = " + score);
           break;
@@ -273,7 +171,7 @@ function draw() {
     
     } // for
 
-    if(p.bounce(player)) {console.log("colliding");
+    if(p.bounce(player)) {
       var swing = (p.position.x-player.position.x)/3;
       p.setSpeed(MAX_SPEED, p.getDirection()+swing);
     
@@ -293,6 +191,13 @@ function draw() {
 
 } // draw
 
+var started = false;
+function keyPressed() {
+  if (!started) song.play();
+  started = true;
+
+} // startMusic
+
 function startLevel() {
   
   barrier.position.y = canvasHeight * (0.5);
@@ -307,7 +212,6 @@ function startLevel() {
 
 } // level
 
-var difficulty_factor = 10;
 function makeBrickRow(location_factor) {
   
   var rowY = canvasHeight * location_factor;
@@ -364,7 +268,10 @@ function makeBrickRow(location_factor) {
         break;
       
       default:
-        brick.remove();
+        brick.addAnimation("2", tough);
+        brick.addAnimation("1", purple);
+        brick.changeAnimation("2");
+        bricks.add(brick);
         break;
 
     } // switch
