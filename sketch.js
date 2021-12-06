@@ -25,8 +25,8 @@ function preload() {
   v2 = loadImage("images/vehicle2.png");
   bgImg = loadImage("images/background.png");
   shot = loadImage("images/shot.png");
-  wall_l = loadImage("images/side_wall.jpg");
-  wall_r = loadImage("images/side_wall.jpg");
+  wall_l = loadImage("images/side_wall.png");
+  wall_r = loadImage("images/side_wall.png");
   life = loadImage("images/life.png");
 
   red = loadImage("images/red_brick.png");
