@@ -240,6 +240,7 @@ function draw() {
   getInput();
   barrier.collide(bricks, () => { BRICK_SPEED = 0.0; });
   
+  let gameOver = false;
   for (let i = 0; i < projectiles.length; i++) {
     
     var p = projectiles[i];
@@ -258,7 +259,8 @@ function draw() {
         case 1:
           life1.remove();health--;
           noLoop();
-          alert("Game Over!\nScore = " + score);
+          p.remove();
+          gameOver = true;
           break;
         default:
           break;
@@ -294,6 +296,16 @@ function draw() {
     b.position.y -= BRICK_SPEED;
 
   } // for
+
+  if (gameOver) {
+    textFont(font);
+    textSize(50);
+    textAlign(CENTER, CENTER);
+    fill(255);
+    text("GAME OVER", canvasWidth / 2, canvasHeight / 2 - 30);
+    text("SCORE: " + score, canvasWidth / 2, canvasHeight / 2 + 30);
+    gameOver = false;
+  } // if
 
 } // draw
 
