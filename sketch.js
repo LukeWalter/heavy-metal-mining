@@ -1,7 +1,7 @@
 var canvasWidth = 960;//window.innerWidth;
 var canvasHeight = 640;//window.innerHeight - 0.1;
 
-var player, wallTop, wallBottom, wallLeft, wallRight, life1, life2, life3;
+var player, wallTop, wallBottom, wallLeft, wallRight, life1, life2, life3, song;
 var bricks;
 var MAX_SPEED = 9;
 var WALL_THICKNESS = canvasWidth / 7;
@@ -21,6 +21,8 @@ var font;
 
 function preload() {
   
+  song = loadSound("doom_metal_song.mp3");
+
   v1 = loadImage("images/vehicle1.png");
   v2 = loadImage("images/vehicle2.png");
   bgImg = loadImage("images/background.png");
@@ -158,7 +160,7 @@ function draw() {
     
     } // for
 
-    if(p.bounce(player)) {console.log("colliding");
+    if(p.bounce(player)) {
       var swing = (p.position.x-player.position.x)/3;
       p.setSpeed(MAX_SPEED, p.getDirection()+swing);
     
@@ -177,6 +179,7 @@ function draw() {
   } // for
 
   if (gameOver) {
+    song.stop();
     textFont(font);
     textSize(50);
     textAlign(CENTER, CENTER);
@@ -201,6 +204,16 @@ function startLevel() {
   BRICK_SPEED = 1.5; 
 
 } // level
+
+var started = false;
+function keyPressed() {
+  if (!started) {
+    song.loop();
+  
+  } // if
+  started = true;
+
+} // startMusic
 
 var difficulty_factor = 10;
 function makeBrickRow(location_factor) {
@@ -327,7 +340,7 @@ function playerShoot() {
     projectile.addImage(shot);
     projectile.setSpeed(projSpeed, 90);
     projectile.setCollider("rectangle", 0, 0, 40, 40);
-    projectiles.push(projectile );
+    projectiles.push(projectile);
 
     ammo--;
 
@@ -344,7 +357,7 @@ function brickHit(ball, brick) {
 
   } else {
     brick.remove();
-    score += 100;
+    score += 100 * projectiles.length;
      
   } // if
   
