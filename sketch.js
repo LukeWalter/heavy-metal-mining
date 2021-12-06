@@ -138,6 +138,8 @@ var score = 0;
 var projectiles = [];
 var normal_bricks;
 
+var font;
+
 function preload() {
   
   v1 = loadImage("images/vehicle1.png");
@@ -163,6 +165,8 @@ function preload() {
   st3 = loadImage("images/steel_brick3.png");
   st2 = loadImage("images/steel_brick2.png");
   st1 = loadImage("images/steel_brick1.png");
+
+  font = loadFont('PressStart2P-Regular.ttf');
 
 } // preload
 
@@ -216,9 +220,9 @@ function setup() {
 } // setup
 
 function draw() {
-  
+
   if (bricks.length == 0) {
-    
+
     for (let i = 0; i < projectiles.length; i++) {
       var p = projectiles[i];
       p.remove();
