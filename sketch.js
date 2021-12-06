@@ -225,6 +225,9 @@ function draw() {
 
     } // for
 
+    projectiles = [];
+    ammo = 3;
+
     startLevel();
 
   } // if
